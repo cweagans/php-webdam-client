@@ -134,7 +134,7 @@ class Folder implements EntityInterface, \JsonSerializable {
   }
 
   public function jsonSerialize() {
-    return [
+    $properties = [
       'id' => $this->id,
       'metadatatemplateid' => $this->metadatatemplateid,
       'parent' => $this->parent,
@@ -149,8 +149,13 @@ class Folder implements EntityInterface, \JsonSerializable {
       'properties' => $this->properties,
       'thumbnailurls' => $this->thumbnailurls,
       'user' => $this->user,
-      'folders' => $this->folders,
     ];
+
+    if (!empty($this->folders)) {
+      $properties['folders'] = $this->folders;
+    }
+
+    return $properties;
   }
 
 }
