@@ -144,6 +144,7 @@ class Asset implements EntityInterface, \JsonSerializable {
   public function jsonSerialize() {
     return [
       'id' => $this->id,
+      'type' => 'asset',
       'status' => $this->status,
       'filename' => $this->filename,
       'version' => $this->version,

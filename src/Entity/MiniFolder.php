@@ -42,6 +42,7 @@ class MiniFolder implements EntityInterface, \JsonSerializable {
   public function jsonSerialize() {
     return [
       'id' => $this->id,
+      'type' => 'folder',
       'name' => $this->name,
     ];
   }

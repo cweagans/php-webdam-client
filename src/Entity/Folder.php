@@ -136,6 +136,7 @@ class Folder implements EntityInterface, \JsonSerializable {
   public function jsonSerialize() {
     $properties = [
       'id' => $this->id,
+      'type' => 'folder',
       'metadatatemplateid' => $this->metadatatemplateid,
       'parent' => $this->parent,
       'name' => $this->name,

@@ -155,6 +155,7 @@ class User implements EntityInterface, \JsonSerializable {
   public function jsonSerialize() {
     return [
       'id' => $this->id,
+      'type' => 'user',
       'username' => $this->username,
       'first' => $this->first,
       'last' => $this->last,

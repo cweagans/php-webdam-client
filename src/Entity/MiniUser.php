@@ -57,6 +57,7 @@ class MiniUser implements EntityInterface, \JsonSerializable {
   public function jsonSerialize() {
     return [
       'id' => $this->id,
+      'type' => 'user',
       'email' => $this->email,
       'name' => $this->name,
       'username' => $this->username,

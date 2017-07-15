@@ -63,6 +63,7 @@ class Group implements EntityInterface, \JsonSerializable {
   public function jsonSerialize() {
     return [
       'id' => $this->id,
+      'type' => 'group',
       'name' => $this->name,
       'description' => $this->description,
       'role' => $this->role,
