@@ -30,6 +30,11 @@ class MiniUser implements EntityInterface, \JsonSerializable {
   public $username;
 
   /**
+   * @var string $status
+   */
+  public $status;
+
+  /**
    * {@inheritdoc}
    */
   public static function fromJson($json) {
@@ -42,6 +47,7 @@ class MiniUser implements EntityInterface, \JsonSerializable {
       'email',
       'name',
       'username',
+      'status',
     ];
 
     $miniuser = new static();
@@ -61,6 +67,7 @@ class MiniUser implements EntityInterface, \JsonSerializable {
       'email' => $this->email,
       'name' => $this->name,
       'username' => $this->username,
+      'status' => $this->status,
     ];
   }
 

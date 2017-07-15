@@ -47,6 +47,21 @@ class Folder implements EntityInterface, \JsonSerializable {
   public $datecreated;
 
   /**
+   * @var string $date_created_unix
+   */
+  public $date_created_unix;
+
+  /**
+   * @var string $eventdate
+   */
+  public $eventdate;
+
+  /**
+   * @var string $date_event_unix
+   */
+  public $date_event_unix;
+
+  /**
    * @var bool $passwordprotected
    */
   public $passwordprotected;
@@ -107,6 +122,8 @@ class Folder implements EntityInterface, \JsonSerializable {
       'permissions',
       'properties',
       'thumbnailurls',
+      'date_created_unix',
+      'eventdate',
     ];
 
     $folder = new static();
@@ -138,17 +155,20 @@ class Folder implements EntityInterface, \JsonSerializable {
       'id' => $this->id,
       'type' => 'folder',
       'metadatatemplateid' => $this->metadatatemplateid,
-      'parent' => $this->parent,
       'name' => $this->name,
+      'parent' => $this->parent,
       'status' => $this->status,
-      'datecreated' => $this->datecreated,
       'passwordprotected' => $this->passwordprotected,
+      'datecreated' => $this->datecreated,
+      'date_created_unix' => $this->date_created_unix,
+      'eventdate' => $this->eventdate,
+      'date_event_unix' => $this->date_event_unix,
+      'thumbnailurls' => $this->thumbnailurls,
+      'clientfolderid' => $this->clientfolderid,
       'numassets' => $this->numassets,
       'numchildren' => $this->numchildren,
-      'clientfolderid' => $this->clientfolderid,
-      'permissions' => $this->permissions,
       'properties' => $this->properties,
-      'thumbnailurls' => $this->thumbnailurls,
+      'permissions' => $this->permissions,
       'user' => $this->user,
     ];
 

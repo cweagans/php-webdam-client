@@ -15,6 +15,7 @@
         "type": "user",
         "email": "jdoe@example.com",
         "name": "John Doe",
-        "username": "jdoe"
+        "username": "jdoe",
+        "status": "active"
     }
 }

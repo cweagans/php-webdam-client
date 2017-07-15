@@ -37,7 +37,8 @@
         "type": "user",
         "email": "jdoe@example.com",
         "name": "JohnDoe",
-        "username": "jdoe"
+        "username": "jdoe",
+        "status": "active"
     },
     "folder": {
         "id": "12345",

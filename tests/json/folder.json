@@ -1,59 +1,60 @@
 {
-    "id": "12345",
+    "id": "2177680",
     "type": "folder",
     "metadatatemplateid": "23456",
-    "parent": "45678",
-    "name": "Folder 1",
+    "name": "GIS Data",
+    "parent": "0",
     "status": "active",
-    "datecreated": "2011-09-23 13:17:48",
     "passwordprotected": "false",
-    "numassets": "123",
+    "datecreated": "2017-03-28 09:58:01",
+    "date_created_unix": "1490720281",
+    "eventdate": "",
+    "date_event_unix": null,
+    "thumbnailurls": [
+        {
+            "size": 100,
+            "url": "https:\/\/static2.webdamdb.com\/images\/xml_100.png"
+        },
+        {
+            "size": 150,
+            "url": "https:\/\/static2.webdamdb.com\/images\/xml_150.png"
+        },
+        {
+            "size": 220,
+            "url": "https:\/\/static2.webdamdb.com\/images\/xml_220.png"
+        },
+        {
+            "size": 310,
+            "url": "https:\/\/static2.webdamdb.com\/images\/xml_310.png"
+        }
+    ],
+    "clientfolderid": null,
+    "numassets": "4",
     "numchildren": "0",
-    "clientfolderid": "680da8c4-bb91-47be-a8a2-e6140ad21aaf",
+    "properties": {
+        "ALBENABLE_REQUESTRECIPIENT": "admin"
+    },
     "permissions": {
         "folders": [
             "create",
-            "move",
             "delete",
+            "move",
             "edit"
         ],
         "assets": [
-            "download",
+            "edit",
             "upload",
             "move",
-            "edit",
-            "delete"
+            "delete",
+            "download"
         ]
     },
-    "properties": {
-        "ALBWATERMARKPHOTOS": "1",
-        "ALBEMAILHIRESDOWNLOAD": "1",
-        "ALBENABLE_REQUESTDOWNLOAD": "1",
-        "ALBENABLE_REQUESTRECIPIENT": "admin"
-    },
-    "thumbnailurls": [
-        {
-            "size": "100",
-            "url": "http:\/\/subdomain.webdamdb.com\/s\/100th_sm_0UerYozlI4.jpg"
-        },
-        {
-            "size": "150",
-            "url": "http:\/\/subdomain.webdamdb.com\/s\/150th_sm_0UerYozlI4.jpg"
-        },
-        {
-            "size": "220",
-            "url": "http:\/\/subdomain.webdamdb.com\/s\/220th_sm_0UerYozlI4.jpg"
-        },
-        {
-            "size": "310",
-            "url": "http:\/\/subdomain.webdamdb.com\/s\/310th_sm_0UerYozlI4.jpg"
-        }
-    ],
     "user": {
-        "id": "12345",
+        "id": "275508",
         "type": "user",
         "email": "jdoe@example.com",
         "name": "John Doe",
-        "username": "jdoe"
+        "username": "jdoe",
+        "status": "active"
     }
 }
