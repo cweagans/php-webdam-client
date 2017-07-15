@@ -7,6 +7,7 @@
 
 namespace cweagans\webdam;
 
+use cweagans\webdam\Entity\Folder;
 use cweagans\webdam\Entity\User;
 use cweagans\webdam\Exception\InvalidCredentialsException;
 use GuzzleHttp\ClientInterface;
@@ -206,6 +207,28 @@ class Client {
     $account = json_decode($response->getBody());
 
     return $account;
+  }
+
+  /**
+   * Get a Folder given a Folder ID.
+   *
+   * @param int $folderID
+   *   The webdam Folder ID.
+   *
+   * @return Folder
+   */
+  public function getFolder($folderID) {
+    $this->checkAuth();
+
+    $response = $this->client->request(
+      "GET",
+      $this->baseUrl . '/folders/' . $folderID,
+      ['headers' => $this->getDefaultHeaders()]
+    );
+
+    $folder = Folder::fromJson((string) $response->getBody());
+
+    return $folder;
   }
 
 }
