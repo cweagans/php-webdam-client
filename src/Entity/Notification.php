@@ -77,10 +77,10 @@ class Notification implements EntityInterface, \JsonSerializable {
     return [
       'id' => $this->id,
       'action' => $this->action,
+      'user' => $this->user,
       'source' => $this->source,
       'subitems' => $this->subitems,
       'displaystring' => $this->displaystring,
-      'user' => $this->user,
     ];
   }
 
