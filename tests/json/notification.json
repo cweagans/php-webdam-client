@@ -1,0 +1,22 @@
+{
+    "id": "2952",
+    "type": "notification",
+    "action": "comment",
+    "user": {
+        "id": "31885",
+        "type": "user",
+        "email": "user@emaildomain.com",
+        "name": "KimJane",
+        "username": "kjane"
+    },
+    "source": {
+        "type": "lightbox",
+        "id": "39438",
+        "name": "lightboxname"
+    },
+    "subitems": {
+        "type": "comment",
+        "comment": "commentstring"
+    },
+    "displaystring": "DisplayString"
+}

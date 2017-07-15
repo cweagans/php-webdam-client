@@ -1,0 +1,47 @@
+{
+    "id": "12345",
+    "type": "asset",
+    "status": "active",
+    "filename": "testfile.jpg",
+    "version": "123",
+    "name": "test file",
+    "filesize": "0.07",
+    "width": "800",
+    "height": "600",
+    "filetype": "jpg",
+    "colorspace": "RGB",
+    "thumbnailurls": [
+        {
+            "size": "100",
+            "url": "http:\/\/subdomain.webdamdb.com\/s\/100th_sm_0UerYozlI4.jpg"
+        },
+        {
+            "size": "150",
+            "url": "http:\/\/subdomain.webdamdb.com\/s\/150th_sm_0UerYozlI4.jpg"
+        },
+        {
+            "size": "220",
+            "url": "http:\/\/subdomain.webdamdb.com\/s\/220th_sm_0UerYozlI4.jpg"
+        },
+        {
+            "size": "310",
+            "url": "http:\/\/subdomain.webdamdb.com\/s\/310th_sm_0UerYozlI4.jpg"
+        }
+    ],
+    "datecreated": "2009-10-09 20:34:36",
+    "datemodified": "2009-10-09 20:34:36",
+    "datecaptured": "2009-10-09 20:34:36",
+    "numComments": "123",
+    "user": {
+        "id": "12345",
+        "type": "user",
+        "email": "jdoe@example.com",
+        "name": "JohnDoe",
+        "username": "jdoe"
+    },
+    "folder": {
+        "id": "12345",
+        "type": "folder",
+        "name": "testFolder"
+    }
+}

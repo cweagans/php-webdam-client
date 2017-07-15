@@ -1,0 +1,59 @@
+{
+    "id": "12345",
+    "type": "folder",
+    "metadatatemplateid": "23456",
+    "parent": "45678",
+    "name": "Folder 1",
+    "status": "active",
+    "datecreated": "2011-09-23 13:17:48",
+    "passwordprotected": "false",
+    "numassets": "123",
+    "numchildren": "0",
+    "clientfolderid": "680da8c4-bb91-47be-a8a2-e6140ad21aaf",
+    "permissions": {
+        "folders": [
+            "create",
+            "move",
+            "delete",
+            "edit"
+        ],
+        "assets": [
+            "download",
+            "upload",
+            "move",
+            "edit",
+            "delete"
+        ]
+    },
+    "properties": {
+        "ALBWATERMARKPHOTOS": "1",
+        "ALBEMAILHIRESDOWNLOAD": "1",
+        "ALBENABLE_REQUESTDOWNLOAD": "1",
+        "ALBENABLE_REQUESTRECIPIENT": "admin"
+    },
+    "thumbnailurls": [
+        {
+            "size": "100",
+            "url": "http:\/\/subdomain.webdamdb.com\/s\/100th_sm_0UerYozlI4.jpg"
+        },
+        {
+            "size": "150",
+            "url": "http:\/\/subdomain.webdamdb.com\/s\/150th_sm_0UerYozlI4.jpg"
+        },
+        {
+            "size": "220",
+            "url": "http:\/\/subdomain.webdamdb.com\/s\/220th_sm_0UerYozlI4.jpg"
+        },
+        {
+            "size": "310",
+            "url": "http:\/\/subdomain.webdamdb.com\/s\/310th_sm_0UerYozlI4.jpg"
+        }
+    ],
+    "user": {
+        "id": "12345",
+        "type": "user",
+        "email": "jdoe@example.com",
+        "name": "John Doe",
+        "username": "jdoe"
+    }
+}

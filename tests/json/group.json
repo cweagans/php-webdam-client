@@ -1,0 +1,8 @@
+{
+    "id": "12345",
+    "type": "group",
+    "name": "GroupName",
+    "description": "GroupDescription",
+    "role": "Administrator",
+    "numusers": 123
+}

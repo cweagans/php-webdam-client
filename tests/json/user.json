@@ -1,0 +1,30 @@
+{
+    "id": "12345",
+    "type": "user",
+    "username": "jdoe",
+    "first": "John",
+    "last": "Smith",
+    "name": "John Doe",
+    "email": "jdoe@example.com",
+    "company": "Test Company",
+    "companyurl": "example.com",
+    "phone": "208-123-4567",
+    "fax": "208-543-9876",
+    "country": "United States",
+    "city": "Boise",
+    "address1": "123 Main Street",
+    "address2": "Unit B",
+    "status": "active",
+    "datecreated": "2009-10-09 20:34:36",
+    "lastlogin": "2013-07-10 12:04:24",
+    "groups": [
+        {
+            "id": "21",
+            "type": "group",
+            "name": "Admin",
+            "description": "Group Description",
+            "role": "Admin",
+            "numusers": 123
+        }
+    ]
+}

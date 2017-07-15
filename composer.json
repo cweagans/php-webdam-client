@@ -16,11 +16,16 @@
     "guzzlehttp/psr7": "~1.0"
   },
   "require-dev": {
-    "phpunit/phpunit": ">4.8.20 <7.0"
+    "phpunit/phpunit": "~6.0"
   },
   "autoload": {
     "psr-4": {
       "cweagans\\webdam\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "cweagans\\webdam\\tests\\": "tests"
     }
   }
 }
