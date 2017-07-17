@@ -19,7 +19,6 @@ cache:
     - ./vendor
 
 install:
-  - composer self-update --no-interaction
   - composer install --no-interaction
 
 script:
