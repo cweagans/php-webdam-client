@@ -124,4 +124,19 @@ class ClientTest extends TestCase {
     $this->assertTrue(is_object($folder));
     $this->assertInstanceOf('cweagans\webdam\Entity\Folder', $folder);
   }
+
+  public function testGetTopLevelFolders() {
+    $mock = new MockHandler([
+      new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
+      new Response(200, [], '[' . file_get_contents(__DIR__ . '/json/folder.json') . ']'),
+    ]);
+    $handler = HandlerStack::create($mock);
+    $guzzleClient = new GClient(['handler' => $handler]);
+
+    $client = new Client($guzzleClient, '', '', '', '');
+
+    $folder = $client->getTopLevelFolders();
+    $this->assertTrue(is_array($folder));
+    $this->assertInstanceOf('cweagans\webdam\Entity\Folder', $folder[0]);
+  }
 }

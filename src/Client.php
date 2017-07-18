@@ -231,4 +231,28 @@ class Client {
     return $folder;
   }
 
+  /**
+   * Get top level folders.
+   *
+   * @return Folder[]
+   */
+  public function getTopLevelFolders() {
+    $this->checkAuth();
+
+    $response = $this->client->request(
+      "GET",
+      $this->baseUrl . '/folders/0',
+      ['headers' => $this->getDefaultHeaders()]
+    );
+
+    $folder_data = json_decode($response->getBody());
+
+    $folders = [];
+    foreach ($folder_data as $folder) {
+      $folders[] = Folder::fromJson($folder);
+    }
+
+    return $folders;
+  }
+
 }
