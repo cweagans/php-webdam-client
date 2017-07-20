@@ -19,6 +19,11 @@ class MiniFolder implements EntityInterface, \JsonSerializable {
    */
   public $name;
 
+  /**
+   * @var object $properties
+   */
+  public $properties;
+
   public static function fromJson($json) {
     if (is_string($json)) {
       $json = json_decode($json);
@@ -27,6 +32,7 @@ class MiniFolder implements EntityInterface, \JsonSerializable {
     $properties = [
       'id',
       'name',
+      'properties',
     ];
 
     $minifolder = new static();
@@ -40,11 +46,17 @@ class MiniFolder implements EntityInterface, \JsonSerializable {
   }
 
   public function jsonSerialize() {
-    return [
+    $data = [
       'id' => $this->id,
       'type' => 'folder',
       'name' => $this->name,
     ];
+
+    if (!is_null($this->properties)) {
+      $data['properties'] = $this->properties;
+    }
+
+    return $data;
   }
 
 }

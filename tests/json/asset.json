@@ -1,48 +1,77 @@
 {
-    "id": "12345",
+    "id": "50123818",
     "type": "asset",
+    "type_id": "1",
     "status": "active",
-    "filename": "testfile.jpg",
-    "version": "123",
-    "name": "test file",
-    "filesize": "0.07",
-    "width": "800",
-    "height": "600",
+    "filename": "Short-finned-Pilot-Whale-Jim-Watt.jpg",
+    "name": "Short-finned-Pilot-Whale-Jim-Watt.jpg",
+    "filesize": "2.37",
+    "width": "3183",
+    "height": "2085",
+    "description": "",
     "filetype": "jpg",
     "colorspace": "RGB",
+    "version": "1",
+    "datecreated": "2017-02-25 12:35:13",
+    "date_created_unix": "1488054913",
+    "datemodified": "2017-03-31 14:11:57",
+    "date_modified_unix": "1490994717",
+    "datecapturedUnix": "1381710253",
+    "datecaptured": "2013-10-13 17:24:13",
+    "mediaUrl": "<div class=\"asset-proc-wrapper hide\"><div class=\"asset_proc proc-details image_220px\" style=\"display:block;\">Asset Processing<\/div><\/div><img onload=\"$('.image-loading, .loading').hide();\" onerror=\"if(WebDAM.isAssetLoaded){WebDAM.isAssetLoaded(this,'https:\/\/cdn2.webdamdb.com\/md_example.jpg?1490994717?1490994717','\/images\/220imageprocessing.gif',false)};\" src=\"https:\/\/cdn2.webdamdb.com\/md_example.jpg?1490994717?1490994717\" border=0 alt=\"Short-finned-Pilot-Whale-Jim-Watt.jpg\" title=\"Short-finned-Pilot-Whale-Jim-Watt.jpg\">",
+    "hiResMediaUrl": "<div class=\"asset-proc-wrapper hide\"><div class=\"asset_proc proc-details image_220px\" style=\"display:block;\">Asset Processing<\/div><\/div><img onload=\"$('.image-loading, .loading').hide();\" onerror=\"if(WebDAM.isAssetLoaded){WebDAM.isAssetLoaded(this,'https:\/\/cdn2.webdamdb.com\/1280_example.jpg?1490994717?1490994717','\/images\/220imageprocessing.gif',false)};\" src=\"https:\/\/cdn2.webdamdb.com\/1280_example.jpg?1490994717?1490994717\" border=0 alt=\"Short-finned-Pilot-Whale-Jim-Watt.jpg\" title=\"Short-finned-Pilot-Whale-Jim-Watt.jpg\">",
+    "numExif": "15",
+    "numXmp": "1",
+    "numComments": 0,
+    "pagecount": 0,
+    "folder": {
+        "id": "2087590",
+        "type": "folder",
+        "name": "Fish Demo Images",
+        "properties": {
+            "ALBENABLE_REQUESTRECIPIENT": "admin"
+        }
+    },
+    "user": {
+        "id": null,
+        "type": "user",
+        "email": null,
+        "name": " ",
+        "username": null,
+        "status": null
+    },
     "thumbnailurls": [
         {
-            "size": "100",
-            "url": "http:\/\/subdomain.webdamdb.com\/s\/100th_sm_0UerYozlI4.jpg"
+            "size": 100,
+            "url": "https:\/\/cdn2.webdamdb.com\/100th_sm_example.jpg?1490994717"
         },
         {
-            "size": "150",
-            "url": "http:\/\/subdomain.webdamdb.com\/s\/150th_sm_0UerYozlI4.jpg"
+            "size": 150,
+            "url": "https:\/\/cdn2.webdamdb.com\/150th_sm_example.jpg?1490994717"
         },
         {
-            "size": "220",
-            "url": "http:\/\/subdomain.webdamdb.com\/s\/220th_sm_0UerYozlI4.jpg"
+            "size": 220,
+            "url": "https:\/\/cdn2.webdamdb.com\/220th_sm_example.jpg?1490994717"
         },
         {
-            "size": "310",
-            "url": "http:\/\/subdomain.webdamdb.com\/s\/310th_sm_0UerYozlI4.jpg"
+            "size": 310,
+            "url": "https:\/\/cdn2.webdamdb.com\/310th_sm_example.jpg?1490994717"
+        },
+        {
+            "size": 550,
+            "url": "https:\/\/cdn2.webdamdb.com\/md_example.jpg?1490994717"
+        },
+        {
+            "size": 1280,
+            "url": "https:\/\/cdn2.webdamdb.com\/1280_example.jpg?1490994717"
         }
     ],
-    "datecreated": "2009-10-09 20:34:36",
-    "datemodified": "2009-10-09 20:34:36",
-    "datecaptured": "2009-10-09 20:34:36",
-    "numComments": "123",
-    "user": {
-        "id": "12345",
-        "type": "user",
-        "email": "jdoe@example.com",
-        "name": "JohnDoe",
-        "username": "jdoe",
-        "status": "active"
-    },
-    "folder": {
-        "id": "12345",
-        "type": "folder",
-        "name": "testFolder"
+    "watched": false,
+    "numRelated": 0,
+    "readonly": 0,
+    "readonlynext": 0,
+    "onhold": 0,
+    "metadata": {
+        "required": []
     }
 }

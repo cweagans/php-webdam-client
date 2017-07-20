@@ -255,4 +255,24 @@ class Client {
     return $folders;
   }
 
+  /**
+   * Get an Asset given an Asset ID.
+   *
+   * @param int $assetID
+   *   The webdam Asset ID.
+   *
+   * @return Asset
+   */
+  public function getAsset($assetId) {
+    $this->checkAuth();
+
+    $response = $this->client->request(
+      "GET",
+      $this->baseUrl . '/assets/' . $assetId,
+      ['headers' => $this->getDefaultHeaders()]
+    );
+
+    return (string) $response->getBody();
+  }
+
 }
