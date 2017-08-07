@@ -8,6 +8,7 @@
 namespace cweagans\webdam\tests;
 
 use cweagans\webdam\Client;
+use Drupal\media_webdam\Webdam;
 use GuzzleHttp\Client as GClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -139,4 +140,80 @@ class ClientTest extends TestCase {
     $this->assertTrue(is_array($folder));
     $this->assertInstanceOf('cweagans\webdam\Entity\Folder', $folder[0]);
   }
+
+  /**
+   * Tests getPresignUrl.
+   */
+  public function testGetPresignUrl() {
+    $mock = new MockHandler([
+      new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
+      new Response(200, [], file_get_contents(__DIR__ . '/json/presign.json')),
+    ]);
+    $handler = HandlerStack::create($mock);
+    $guzzleClient = new GClient(['handler' => $handler]);
+    $client = new Client($guzzleClient, '', '', '', '');
+
+    $file_data = [
+      "contenttype" => "image/png",
+      "filename" => "not_for_real.png",
+      "filesize" => "664",
+      "file_uri" => "public://media_webdam/not_for_real.png",
+      "folderid" => 112233,
+    ];
+    $presignUrl = $client->getPresignUrl($file_data);
+
+    // Checks on the object retrieved. Structure and 'content'.
+    self::assertTrue(is_object($presignUrl));
+    self::assertObjectHasAttribute('presignedUrl', $presignUrl);
+    self::assertObjectHasAttribute('processId', $presignUrl);
+    self::assertTrue(is_string($presignUrl->processId));
+    self::assertContains('AWSAccessKeyId', $presignUrl->presignedUrl);
+    self::assertContains('Expires', $presignUrl->presignedUrl);
+    self::assertContains('Signature', $presignUrl->presignedUrl);
+  }
+
+  /**
+   * Tests uploadPresigned.
+   */
+  public function testUploadPresigned() {
+    $mock = new MockHandler([
+      new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
+      new Response(200),
+    ]);
+    $handler = HandlerStack::create($mock);
+    $guzzleClient = new GClient(['handler' => $handler]);
+    $client = new Client($guzzleClient, '', '', '', '');
+
+    // @TODO: It's probably not correct to have a real test file.
+    $file_data = [
+      "contenttype" => "image/png",
+      "file_uri" => __DIR__ . "/not_for_real.png",
+    ];
+    $presignUrl = file_get_contents(__DIR__ . '/json/presign.json');
+
+    $uploadPresigned = $client->uploadPresigned($presignUrl, $file_data);
+    // Check if status is 200.
+    self::assertEquals($uploadPresigned, ['status' => 200]);
+
+  }
+
+  /**
+   * Tests uploadPresigned.
+   */
+  public function testUploadConfirmed() {
+    $mock = new MockHandler([
+      new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
+      new Response(200),
+    ]);
+    $handler = HandlerStack::create($mock);
+    $guzzleClient = new GClient(['handler' => $handler]);
+    $client = new Client($guzzleClient, '', '', '', '');
+
+    $processId = "123456789";
+    $uploadConfirmed = $client->uploadConfirmed($processId);
+    // Check if status is 200 and upload confirmed status.
+    self::assertArraySubset(['step' => 'upload confirmed', 'status' => 200], $uploadConfirmed);
+  }
+
 }
+

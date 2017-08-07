@@ -1,0 +1,4 @@
+{
+    "presignedUrl": "https:\/\/webdamuploads.s3.amazonaws.com\/12345_abcde_6789.png?AWSAccessKeyId=ABCDEFGHIJKLMNOPQRST&Expires=1533422083&Signature=spAniwmuy5wj2T2geZyaDEgE1AM%3D",
+    "processId": "123456789"
+}
