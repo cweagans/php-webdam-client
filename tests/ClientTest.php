@@ -170,6 +170,7 @@ class ClientTest extends TestCase {
     self::assertContains('AWSAccessKeyId', $presignUrl->presignedUrl);
     self::assertContains('Expires', $presignUrl->presignedUrl);
     self::assertContains('Signature', $presignUrl->presignedUrl);
+
   }
 
   /**
@@ -184,14 +185,12 @@ class ClientTest extends TestCase {
     $guzzleClient = new GClient(['handler' => $handler]);
     $client = new Client($guzzleClient, '', '', '', '');
 
-    // @TODO: It's probably not correct to have a real test file.
-    $file_data = [
-      "contenttype" => "image/png",
-      "file_uri" => __DIR__ . "/not_for_real.png",
-    ];
     $presignUrl = file_get_contents(__DIR__ . '/json/presign.json');
+    $file_type = 'image/png';
+    // @TODO: It's probably not correct to have a real test file.
+    $file_uri = __DIR__ . '/not_for_real.png';
 
-    $uploadPresigned = $client->uploadPresigned($presignUrl, $file_data);
+    $uploadPresigned = $client->uploadPresigned($presignUrl, $file_uri, $file_type);
     // Check if status is 200.
     self::assertEquals($uploadPresigned, ['status' => 200]);
 
@@ -211,9 +210,17 @@ class ClientTest extends TestCase {
 
     $processId = "123456789";
     $uploadConfirmed = $client->uploadConfirmed($processId);
-    // Check if status is 200 and upload confirmed status.
-    self::assertArraySubset(['step' => 'upload confirmed', 'status' => 200], $uploadConfirmed);
+    // Check if new asset ID is a string.
+    self::assertTrue(is_string($uploadConfirmed));
   }
 
+}
+
+class TestClassToTest extends Client
+{
+  public function getPresignUrl(array $file_data)
+  {
+    return parent::getPresignUrl($file_data);
+  }
 }
 

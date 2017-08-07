@@ -279,7 +279,8 @@ class Client {
    * Gets presigned url from AWS S3.
    *
    * @param array $file_data
-   *   The file data required by Webdam.
+   *   The file data required by Webdam
+   *   (filesize, folder_id, filename, contenttype).
    *
    * @return mixed
    *   Presigned url needed for next step + PID.
@@ -287,21 +288,15 @@ class Client {
   public function getPresignUrl(array $file_data) {
     $this->checkAuth();
 
-    try {
-      $response = $this->client->request(
-        "GET",
-        $this->baseUrl . '/ws/awss3/generateupload',
-        [
-          'headers' => $this->getDefaultHeaders(),
-          'query' => $file_data,
-        ]
-      );
-      return json_decode($response->getBody());
-    }
-    catch (ClientException $e) {
-      dump($e->getMessage());
-      return FALSE;
-    }
+    $response = $this->client->request(
+      "GET",
+      $this->baseUrl . '/ws/awss3/generateupload',
+      [
+        'headers' => $this->getDefaultHeaders(),
+        'query' => $file_data,
+      ]
+    );
+    return json_decode($response->getBody());
   }
 
   /**
@@ -309,36 +304,26 @@ class Client {
    *
    * @param mixed $presignedUrl
    *   The presigned URL we got in previous step from AWS.
-   * @param array $file_data
-   *   The file data required by Webdam.
-   *
+   * @param string $file_uri
+   *   The file URI.
+   * @param string $file_type
+   *   The File Content Type.
    * @return array
    *   Response Status 100 / 200
    */
-  public function uploadPresigned($presignedUrl, array $file_data) {
+  public function uploadPresigned($presignedUrl, $file_uri, $file_type) {
     $this->checkAuth();
 
-    $file = fopen($file_data['file_uri'], 'r');
+    $response = $this->client->request(
+      "PUT",
+      $presignedUrl, [
+        'headers' => ['Content-Type' => $file_type],
+        'body' => $file_uri,
+      ]);
+    return [
+      'status' => json_decode($response->getStatusCode(), TRUE),
+    ];
 
-    try {
-      $response = $this->client->request(
-        "PUT",
-        $presignedUrl, [
-          'headers' => ['Content-Type' => $file_data['contenttype']],
-          'body' => stream_get_contents($file),
-        ]);
-
-      return [
-        'status' => json_decode($response->getStatusCode(), TRUE),
-      ];
-    }
-    catch (ClientException $e) {
-      dump($e->getMessage());
-      return [
-        'step' => 'upload presigned',
-        'error' => json_decode($e, TRUE),
-      ];
-    }
   }
 
   /**
@@ -347,32 +332,20 @@ class Client {
    * @param string $pid
    *   The Process ID we got in first step.
    *
-   * @return array
-   *   The step, the status code and the newly uploaded asset ID.
+   * @return string
+   *   The uploaded/edited asset ID.
    */
   public function uploadConfirmed($pid) {
     $this->checkAuth();
 
-    try {
-      $response = $this->client->request(
-        "PUT",
-        $this->baseUrl . '/ws/awss3/finishupload/' . $pid,
-        ['headers' => $this->getDefaultHeaders()]
-      );
+    $response = $this->client->request(
+      "PUT",
+      $this->baseUrl . '/ws/awss3/finishupload/' . $pid,
+      ['headers' => $this->getDefaultHeaders()]
+    );
 
-      return [
-        'step' => 'upload confirmed',
-        'status' => $response->getStatusCode(),
-        'body' => json_decode($response->getBody(), TRUE)['id'],
-      ];
-    }
-    catch (ClientException $e) {
-      dump($e->getMessage());
-      return [
-        'step' => 'confirmation',
-        'error' => json_decode($e, TRUE),
-      ];
-    }
+    return (string) json_decode($response->getBody(), TRUE)['id'];
+
   }
 
   /**
@@ -392,13 +365,14 @@ class Client {
     if ($folderID != NULL) {
       $file_data['folderid'] = $folderID;
     }
-
+    $file_uri = $file_data['file_uri'];
+    $file_type = $file_data['contenttype'];
     $response = [];
     // Getting Pre-sign URL.
     $presign = $this->getPresignUrl($file_data);
     if (property_exists($presign, 'presignedUrl')) {
       // Post-sign upload.
-      $postsign = $this->uploadPresigned($presign->presignedUrl, $file_data);
+      $postsign = $this->uploadPresigned($presign->presignedUrl, $file_uri, $file_type);
       $response['processId'] = $presign->processId;
       $response['presignUrl'] = $presign->presignedUrl;
       $response['post_status'] = $postsign['status'];
@@ -406,17 +380,14 @@ class Client {
       if ($postsign['status'] == '200' || $postsign['status'] == '100') {
         // Getting Asset ID.
         $uploadConfirm = $this->uploadConfirmed($presign->processId);
-        $response['confirm'] = $uploadConfirm['status'];
-        drupal_set_message(t('File sucessfully uploaded!'), 'status');
+        $response['id'] = $uploadConfirm;
       }
       else {
         $response['error'] = 'Failed to upload file after presigning.';
-        drupal_set_message(t('Failed to upload file after presigning.'), 'error');
       }
     }
     else {
       $response['error'] = 'Failed to obtain presigned URL from Webdam.';
-      drupal_set_message(t('Failed to obtain presigned URL from Webdam.'), 'error');
     }
 
     return $response;
