@@ -338,7 +338,7 @@ class Client {
    * @return string
    *   The uploaded/edited asset ID.
    */
-  public function uploadConfirmed($pid) {
+  protected function uploadConfirmed($pid) {
     $this->checkAuth();
 
     $response = $this->client->request(
