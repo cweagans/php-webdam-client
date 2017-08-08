@@ -7,6 +7,7 @@
 
 namespace cweagans\webdam;
 
+use cweagans\webdam\Entity\Asset;
 use cweagans\webdam\Entity\Folder;
 use cweagans\webdam\Entity\User;
 use cweagans\webdam\Exception\InvalidCredentialsException;
@@ -272,7 +273,9 @@ class Client {
       ['headers' => $this->getDefaultHeaders()]
     );
 
-    return (string) $response->getBody();
+    $asset = Asset::fromJson((string) $response->getBody());
+
+    return $asset;
   }
 
   /**
@@ -285,7 +288,7 @@ class Client {
    * @return mixed
    *   Presigned url needed for next step + PID.
    */
-  public function getPresignUrl(array $file_data) {
+  protected function getPresignUrl(array $file_data) {
     $this->checkAuth();
 
     $response = $this->client->request(
@@ -311,7 +314,7 @@ class Client {
    * @return array
    *   Response Status 100 / 200
    */
-  public function uploadPresigned($presignedUrl, $file_uri, $file_type) {
+  protected function uploadPresigned($presignedUrl, $file_uri, $file_type) {
     $this->checkAuth();
 
     $response = $this->client->request(
@@ -357,7 +360,7 @@ class Client {
    *   The Webdam folder ID.
    *
    * @return array
-   *   Webdam response.
+   *   Webdam response (processId, presign url, status, asset id).
    */
   public function uploadAsset(array $file_data, $folderID = NULL) {
     $this->checkAuth();
@@ -389,7 +392,6 @@ class Client {
     else {
       $response['error'] = 'Failed to obtain presigned URL from Webdam.';
     }
-
     return $response;
   }
 

@@ -142,85 +142,81 @@ class ClientTest extends TestCase {
   }
 
   /**
-   * Tests getPresignUrl.
+   * Test getAsset.
    */
-  public function testGetPresignUrl() {
+  public function testGetAsset() {
+    $mock = new MockHandler([
+      new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
+      new Response(200, [], file_get_contents(__DIR__ . '/json/asset.json')),
+    ]);
+    $handler = HandlerStack::create($mock);
+    $guzzleClient = new GClient(['handler' => $handler]);
+
+    $client = new Client($guzzleClient, '', '', '', '');
+
+    $asset = $client->getAsset(12345);
+    self::assertTrue(is_object($asset));
+    self::assertInstanceOf('cweagans\webdam\Entity\Asset', $asset);
+
+  }
+
+  /**
+   * Tests upload asset.
+   */
+  public function testUploadAsset() {
     $mock = new MockHandler([
       new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
       new Response(200, [], file_get_contents(__DIR__ . '/json/presign.json')),
+      new Response(200, [], '{"id":"1234567"}'),
+      new Response(200, [], file_get_contents(__DIR__ . '/json/asset_uploaded.json')),
     ]);
     $handler = HandlerStack::create($mock);
     $guzzleClient = new GClient(['handler' => $handler]);
     $client = new Client($guzzleClient, '', '', '', '');
 
-    $file_data = [
-      "contenttype" => "image/png",
-      "filename" => "not_for_real.png",
-      "filesize" => "664",
-      "file_uri" => "public://media_webdam/not_for_real.png",
-      "folderid" => 112233,
-    ];
-    $presignUrl = $client->getPresignUrl($file_data);
-
-    // Checks on the object retrieved. Structure and 'content'.
-    self::assertTrue(is_object($presignUrl));
-    self::assertObjectHasAttribute('presignedUrl', $presignUrl);
-    self::assertObjectHasAttribute('processId', $presignUrl);
-    self::assertTrue(is_string($presignUrl->processId));
-    self::assertContains('AWSAccessKeyId', $presignUrl->presignedUrl);
-    self::assertContains('Expires', $presignUrl->presignedUrl);
-    self::assertContains('Signature', $presignUrl->presignedUrl);
-
-  }
-
-  /**
-   * Tests uploadPresigned.
-   */
-  public function testUploadPresigned() {
-    $mock = new MockHandler([
-      new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
-      new Response(200),
-    ]);
-    $handler = HandlerStack::create($mock);
-    $guzzleClient = new GClient(['handler' => $handler]);
-    $client = new Client($guzzleClient, '', '', '', '');
-
-    $presignUrl = file_get_contents(__DIR__ . '/json/presign.json');
-    $file_type = 'image/png';
-    // @TODO: It's probably not correct to have a real test file.
     $file_uri = __DIR__ . '/not_for_real.png';
+    $file_data = [
+      "filesize" => filesize($file_uri),
+      "contenttype" => mime_content_type($file_uri),
+      "filename" => basename($file_uri),
+      "file_uri" => $file_uri,
+      "folderId" => 112233,
+    ];
+    $folderID = $file_data['folderId'];
 
-    $uploadPresigned = $client->uploadPresigned($presignUrl, $file_uri, $file_type);
-    // Check if status is 200.
-    self::assertEquals($uploadPresigned, ['status' => 200]);
+    $uploadAsset = $client->uploadAsset($file_data, $folderID);
+    self::assertTrue(is_array($uploadAsset));
+    self::assertNotEmpty($uploadAsset);
+    self::assertArrayNotHasKey("error",$uploadAsset);
 
   }
-
   /**
-   * Tests uploadPresigned.
+   * Tests upload asset without presigned url.
    */
-  public function testUploadConfirmed() {
+  public function testUploadAssetFailed() {
     $mock = new MockHandler([
       new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
-      new Response(200),
+      new Response(200, [], '{"id":"1234567"}'),
+      new Response(200, [], file_get_contents(__DIR__ . '/json/asset_uploaded.json')),
     ]);
     $handler = HandlerStack::create($mock);
     $guzzleClient = new GClient(['handler' => $handler]);
     $client = new Client($guzzleClient, '', '', '', '');
 
-    $processId = "123456789";
-    $uploadConfirmed = $client->uploadConfirmed($processId);
-    // Check if new asset ID is a string.
-    self::assertTrue(is_string($uploadConfirmed));
+    $file_uri = __DIR__ . '/not_for_real.png';
+    $file_data = [
+      "filesize" => filesize($file_uri),
+      "contenttype" => mime_content_type($file_uri),
+      "filename" => basename($file_uri),
+      "file_uri" => $file_uri,
+      "folderId" => 112233,
+    ];
+    $folderID = $file_data['folderId'];
+
+    $uploadAsset = $client->uploadAsset($file_data, $folderID);
+    self::assertTrue(is_array($uploadAsset));
+    self::assertNotEmpty($uploadAsset);
+    self::assertArrayHasKey("error", $uploadAsset);
+
   }
-
 }
-
-class TestClassToTest extends Client
-{
-  public function getPresignUrl(array $file_data)
-  {
-    return parent::getPresignUrl($file_data);
-  }
-}
-
