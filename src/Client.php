@@ -7,6 +7,7 @@
 
 namespace cweagans\webdam;
 
+use cweagans\webdam\Entity\Asset;
 use cweagans\webdam\Entity\Folder;
 use cweagans\webdam\Entity\User;
 use cweagans\webdam\Exception\InvalidCredentialsException;
@@ -272,7 +273,7 @@ class Client {
       ['headers' => $this->getDefaultHeaders()]
     );
 
-    return (string) $response->getBody();
+    return Asset::fromJson((string) $response->getBody());
   }
 
 }
