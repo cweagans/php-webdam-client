@@ -328,11 +328,12 @@ class Client {
   protected function uploadPresigned($presignedUrl, $file_uri, $file_type) {
     $this->checkAuth();
 
+    $file = fopen($file_uri, 'r');
     $response = $this->client->request(
       "PUT",
       $presignedUrl, [
         'headers' => ['Content-Type' => $file_type],
-        'body' => $file_uri,
+        'body' => stream_get_contents($file),
       ]);
 
     return [
@@ -368,6 +369,8 @@ class Client {
    *
    * @param string $file_uri
    *   The file URI.
+   * @param string $file_name
+   *   The File filename.
    * @param int $folderID
    *   The Webdam folder ID.
    *
