@@ -274,9 +274,7 @@ class Client {
       ['headers' => $this->getDefaultHeaders()]
     );
 
-    $asset = Asset::fromJson((string) $response->getBody());
-
-    return $asset;
+    return Asset::fromJson((string) $response->getBody());
   }
 
   /**
