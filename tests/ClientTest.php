@@ -155,8 +155,8 @@ class ClientTest extends TestCase {
     $client = new Client($guzzleClient, '', '', '', '');
 
     $asset = $client->getAsset(12345);
-    self::assertTrue(is_object($asset));
-    self::assertInstanceOf('cweagans\webdam\Entity\Asset', $asset);
+    $this->assertTrue(is_object($asset));
+    $this->assertInstanceOf('cweagans\webdam\Entity\Asset', $asset);
 
   }
 
@@ -175,48 +175,40 @@ class ClientTest extends TestCase {
     $client = new Client($guzzleClient, '', '', '', '');
 
     $file_uri = __DIR__ . '/not_for_real.png';
-    $file_data = [
-      "filesize" => filesize($file_uri),
-      "contenttype" => mime_content_type($file_uri),
-      "filename" => basename($file_uri),
-      "file_uri" => $file_uri,
-      "folderId" => 112233,
-    ];
-    $folderID = $file_data['folderId'];
+    $file_type = mime_content_type($file_uri);
+    $file_name = basename($file_uri);
+    $file_size = filesize($file_uri);
+    $folderID = 112233;
 
-    $uploadAsset = $client->uploadAsset($file_data, $folderID);
-    self::assertTrue(is_array($uploadAsset));
-    self::assertNotEmpty($uploadAsset);
-    self::assertArrayNotHasKey("error",$uploadAsset);
+    $uploadAsset = $client->uploadAsset($file_uri, $file_type, $file_name, $file_size, $folderID);
+    $this->assertTrue(is_string($uploadAsset));
+    $this->assertNotEmpty($uploadAsset);
 
   }
   /**
    * Tests upload asset without presigned url.
+   *
+   * @expectedException \cweagans\webdam\Exception\UploadAssetException
+   * @expectedExceptionMessage Failed to obtain presigned URL from AWS.
    */
   public function testUploadAssetFailed() {
     $mock = new MockHandler([
       new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
-      new Response(200, [], '{"id":"1234567"}'),
-      new Response(200, [], file_get_contents(__DIR__ . '/json/asset_uploaded.json')),
+      new Response(200, [], '{}'),
     ]);
     $handler = HandlerStack::create($mock);
     $guzzleClient = new GClient(['handler' => $handler]);
     $client = new Client($guzzleClient, '', '', '', '');
 
     $file_uri = __DIR__ . '/not_for_real.png';
-    $file_data = [
-      "filesize" => filesize($file_uri),
-      "contenttype" => mime_content_type($file_uri),
-      "filename" => basename($file_uri),
-      "file_uri" => $file_uri,
-      "folderId" => 112233,
-    ];
-    $folderID = $file_data['folderId'];
+    $file_type = mime_content_type($file_uri);
+    $file_name = basename($file_uri);
+    $file_size = filesize($file_uri);
+    $folderID = 112233;
 
-    $uploadAsset = $client->uploadAsset($file_data, $folderID);
-    self::assertTrue(is_array($uploadAsset));
-    self::assertNotEmpty($uploadAsset);
-    self::assertArrayHasKey("error", $uploadAsset);
+    $uploadAsset = $client->uploadAsset($file_uri, $file_type, $file_name, $file_size, $folderID);
+
+    $this->assertEmpty('dsds', $uploadAsset);
 
   }
 }
