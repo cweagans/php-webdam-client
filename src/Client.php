@@ -384,36 +384,18 @@ class Client {
     //Getting file data from file_uri
     $file_type = mime_content_type($file_uri);
     $file_size = filesize($file_uri);
-    dump('FILENAME CLI > ' . $file_name);
+
     $response = [];
     // Getting Pre-sign URL.
     $presign = $this->getPresignUrl($file_type, $file_name, $file_size, $folderID);
-    //logging
-    $fh = fopen('getPresignUrl.txt', 'w') or die("Can't open file.");
-    // output the value as a variable by setting the 2nd parameter to true
-    $results = print_r($presign, true);
-    fwrite($fh, $results);
-    fclose($fh);
 
     if (property_exists($presign, 'presignedUrl')) {
       // Post-sign upload.
       $postsign = $this->uploadPresigned($presign->presignedUrl, $file_uri, $file_type);
-      //logging
-      $fh = fopen('uploadPresigned.txt', 'w') or die("Can't open file.");
-      // output the value as a variable by setting the 2nd parameter to true
-      $results = print_r($postsign, true);
-      fwrite($fh, $results);
-      fclose($fh);
 
       if ($postsign['status'] == '200' || $postsign['status'] == '100') {
         // Getting Asset ID.
         $response = $this->uploadConfirmed($presign->processId);
-        //logging
-        $fh = fopen('uploadConfirmed.txt', 'w') or die("Can't open file.");
-        // output the value as a variable by setting the 2nd parameter to true
-        $results = print_r($response, true);
-        fwrite($fh, $results);
-        fclose($fh);
       }
       else {
         // If we got presignedUrl but upload not confirmed, we throw exception.
@@ -424,7 +406,6 @@ class Client {
       // If we couldn't retrieve presignedUrl, we throw exception.
       throw new UploadAssetException('Failed to obtain presigned URL from AWS.');
     }
-    dump($response);
     return $response;
   }
 
