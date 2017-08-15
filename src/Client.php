@@ -11,6 +11,7 @@ use cweagans\webdam\Entity\Asset;
 use cweagans\webdam\Entity\Folder;
 use cweagans\webdam\Entity\User;
 use cweagans\webdam\Exception\InvalidCredentialsException;
+use cweagans\webdam\Exception\UploadAssetException;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 
@@ -259,7 +260,7 @@ class Client {
   /**
    * Get an Asset given an Asset ID.
    *
-   * @param int $assetID
+   * @param int $assetId
    *   The webdam Asset ID.
    *
    * @return Asset
@@ -274,6 +275,141 @@ class Client {
     );
 
     return Asset::fromJson((string) $response->getBody());
+  }
+
+  /**
+   * Gets presigned url from AWS S3.
+   *
+   * @param string $file_type
+   *   The File Content Type.
+   * @param string $file_name
+   *   The File filename.
+   * @param string $file_size
+   *   The File size.
+   * @param string $folderID
+   *   The folder ID to upload the file to.
+   *
+   * @return mixed
+   *   Presigned url needed for next step + PID.
+   */
+  protected function getPresignUrl($file_type, $file_name, $file_size, $folderID) {
+    $this->checkAuth();
+
+    $file_data = [
+      'filesize' => $file_size,
+      'filename' => $file_name,
+      'contenttype' => $file_type,
+      'folderid' => $folderID,
+    ];
+    $response = $this->client->request(
+      "GET",
+      $this->baseUrl . '/ws/awss3/generateupload',
+      [
+        'headers' => $this->getDefaultHeaders(),
+        'query' => $file_data,
+      ]
+    );
+
+    return json_decode($response->getBody());
+  }
+
+  /**
+   * Uploads file to Webdam AWS S3.
+   *
+   * @param mixed $presignedUrl
+   *   The presigned URL we got in previous step from AWS.
+   * @param string $file_uri
+   *   The file URI.
+   * @param string $file_type
+   *   The File Content Type.
+   * @return array
+   *   Response Status 100 / 200
+   */
+  protected function uploadPresigned($presignedUrl, $file_uri, $file_type) {
+    $this->checkAuth();
+
+    $file = fopen($file_uri, 'r');
+    $response = $this->client->request(
+      "PUT",
+      $presignedUrl, [
+        'headers' => ['Content-Type' => $file_type],
+        'body' => stream_get_contents($file),
+      ]);
+
+    return [
+      'status' => json_decode($response->getStatusCode(), TRUE),
+    ];
+
+  }
+
+  /**
+   * Confirms the upload to Webdam.
+   *
+   * @param string $pid
+   *   The Process ID we got in first step.
+   *
+   * @return string
+   *   The uploaded/edited asset ID.
+   */
+  protected function uploadConfirmed($pid) {
+    $this->checkAuth();
+
+    $response = $this->client->request(
+      "PUT",
+      $this->baseUrl . '/ws/awss3/finishupload/' . $pid,
+      ['headers' => $this->getDefaultHeaders()]
+    );
+
+    return (string) json_decode($response->getBody(), TRUE)['id'];
+
+  }
+
+  /**
+   * Uploads Assets to Webdam using the previously defined methods.
+   *
+   * @param string $file_uri
+   *   The file URI.
+   * @param string $file_name
+   *   The File filename.
+   * @param int $folderID
+   *   The Webdam folder ID.
+   *
+   * @throws UploadAssetException
+   *   If uploadAsset fails we throw an instance of UploadAssetException
+   *   that contains a message for the caller.
+   *
+   * @return string
+   *   Webdam response (asset id).
+   */
+  public function uploadAsset($file_uri, $file_name, $folderID) {
+    $this->checkAuth();
+
+    //Getting file data from file_uri
+    $file_type = mime_content_type($file_uri);
+    $file_size = filesize($file_uri);
+
+    $response = [];
+    // Getting Pre-sign URL.
+    $presign = $this->getPresignUrl($file_type, $file_name, $file_size, $folderID);
+
+    if (property_exists($presign, 'presignedUrl')) {
+      // Post-sign upload.
+      $postsign = $this->uploadPresigned($presign->presignedUrl, $file_uri, $file_type);
+
+      if ($postsign['status'] == '200' || $postsign['status'] == '100') {
+        // Getting Asset ID.
+        $response = $this->uploadConfirmed($presign->processId);
+      }
+      else {
+        // If we got presignedUrl but upload not confirmed, we throw exception.
+        throw new UploadAssetException('Failed to upload file after presigning.');
+      }
+    }
+    else {
+      // If we couldn't retrieve presignedUrl, we throw exception.
+      throw new UploadAssetException('Failed to obtain presigned URL from AWS.');
+    }
+    return $response;
   }
 
 }
