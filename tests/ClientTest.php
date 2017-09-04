@@ -126,6 +126,9 @@ class ClientTest extends TestCase {
     $this->assertInstanceOf('cweagans\webdam\Entity\Folder', $folder);
   }
 
+  /**
+   * Test getTopLevelFolders().
+   */
   public function testGetTopLevelFolders() {
     $mock = new MockHandler([
       new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
@@ -142,7 +145,7 @@ class ClientTest extends TestCase {
   }
 
   /**
-   * Test getAsset.
+   * Test getAsset().
    */
   public function testGetAsset() {
     $mock = new MockHandler([
