@@ -166,28 +166,28 @@ class ClientTest extends TestCase {
   /**
    * Tests upload asset.
    */
-  public function testUploadAsset() {
-    $mock = new MockHandler([
-      new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
-      new Response(200, [], file_get_contents(__DIR__ . '/json/presign.json')),
-      new Response(200, [], '{"id":"1234567"}'),
-      new Response(200, [], file_get_contents(__DIR__ . '/json/asset_uploaded.json')),
-    ]);
-    $handler = HandlerStack::create($mock);
-    $guzzleClient = new GClient(['handler' => $handler]);
-    $client = new Client($guzzleClient, '', '', '', '');
+//  public function testUploadAsset() {
+//    $mock = new MockHandler([
+//      new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
+//      new Response(200, [], file_get_contents(__DIR__ . '/json/presign.json')),
+//      new Response(200, [], '{"id":"1234567"}'),
+//      new Response(200, [], file_get_contents(__DIR__ . '/json/asset_uploaded.json')),
+//    ]);
+//    $handler = HandlerStack::create($mock);
+//    $guzzleClient = new GClient(['handler' => $handler]);
+//    $client = new Client($guzzleClient, '', '', '', '');
+//
+//    $file_uri = __DIR__ . '/not_for_real.png';
+//    $file_type = mime_content_type($file_uri);
+//    $file_name = basename($file_uri);
+//    $file_size = filesize($file_uri);
+//    $folderID = 112233;
+//
+//    $uploadAsset = $client->uploadAsset($file_uri, $file_type, $file_name, $file_size, $folderID);
+//    $this->assertTrue(is_string($uploadAsset));
+//    $this->assertNotEmpty($uploadAsset);
+//  }
 
-    $file_uri = __DIR__ . '/not_for_real.png';
-    $file_type = mime_content_type($file_uri);
-    $file_name = basename($file_uri);
-    $file_size = filesize($file_uri);
-    $folderID = 112233;
-
-    $uploadAsset = $client->uploadAsset($file_uri, $file_type, $file_name, $file_size, $folderID);
-    $this->assertTrue(is_string($uploadAsset));
-    $this->assertNotEmpty($uploadAsset);
-
-  }
   /**
    * Tests upload asset without presigned url.
    *
