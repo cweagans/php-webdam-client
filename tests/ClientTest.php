@@ -214,4 +214,32 @@ class ClientTest extends TestCase {
     $this->assertEmpty('dsds', $uploadAsset);
 
   }
+
+  /**
+   * Test getFolderAssets().
+   */
+  public function testGetFolderAssets() {
+    $asset_list = new \stdClass();
+    $asset_list->items = [
+      json_decode(file_get_contents(__DIR__ . '/json/asset.json'))
+    ];
+    $asset_list->folders = [
+      json_decode(file_get_contents(__DIR__ . '/json/folder.json'))
+    ];
+
+
+    $mock = new MockHandler([
+      new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
+      new Response(200, [], json_encode($asset_list)),
+    ]);
+    $handler = HandlerStack::create($mock);
+    $guzzleClient = new GClient(['handler' => $handler]);
+
+    $client = new Client($guzzleClient, '', '', '', '');
+
+    $asset_list = $client->getFolderAssets(2177680);
+    $this->assertInstanceOf('cweagans\webdam\Entity\MiniFolder', $asset_list->folders[0]);
+    $this->assertInstanceOf('cweagans\webdam\Entity\Asset', $asset_list->items[0]);
+  }
+
 }

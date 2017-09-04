@@ -9,6 +9,7 @@ namespace cweagans\webdam;
 
 use cweagans\webdam\Entity\Asset;
 use cweagans\webdam\Entity\Folder;
+use cweagans\webdam\Entity\MiniFolder;
 use cweagans\webdam\Entity\User;
 use cweagans\webdam\Exception\InvalidCredentialsException;
 use cweagans\webdam\Exception\UploadAssetException;
@@ -409,6 +410,50 @@ class Client {
       // If we couldn't retrieve presignedUrl, we throw exception.
       throw new UploadAssetException('Failed to obtain presigned URL from AWS.');
     }
+  }
+
+  /**
+   * Get a list of Assets given a Folder ID.
+   *
+   * @param int $folderId
+   *   The webdam folder ID.
+   *
+   * @return object
+   *   Contains the following keys:
+   *     - folders: an array containing a MiniFolder describing $folderId
+   *     - offset: The offset used for the query.
+   *     - total_count: The total number of assets in the result set across all pages.
+   *     - limit: The number of assets returned at a time.
+   *     - facets: Information about the assets returned.
+   *     - items: an array of Asset objects.
+   *
+   * @todo Automatically page through the results and return an all-inclusive list.
+   * @todo Alternatively, provide page/sortdir/sortby/limit/types filters.
+   */
+  public function getFolderAssets($folderId) {
+    $this->checkAuth();
+
+    $response = $this->client->request(
+      "GET",
+      $this->baseUrl . '/folders/' . $folderId . '/assets',
+      ['headers' => $this->getDefaultHeaders()]
+    );
+    $response = json_decode((string) $response->getBody());
+
+    // Replace items key with actual Asset objects.
+    $assets = [];
+    foreach ($response->items as $asset) {
+      $assets[] = Asset::fromJson($asset);
+    }
+    $response->items = $assets;
+
+    // Replace folders key with actual Folder objects.
+    $folders = [];
+    foreach ($response->folders as $folder) {
+      $folders[] = MiniFolder::fromJson($folder);
+    }
+    $response->folders = $folders;
+
     return $response;
   }
 
