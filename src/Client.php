@@ -323,6 +323,7 @@ class Client {
    *   The file URI.
    * @param string $file_type
    *   The File Content Type.
+   *
    * @return array
    *   Response Status 100 / 200
    */
@@ -410,6 +411,7 @@ class Client {
       // If we couldn't retrieve presignedUrl, we throw exception.
       throw new UploadAssetException('Failed to obtain presigned URL from AWS.');
     }
+    return $response;
   }
 
   /**
