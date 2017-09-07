@@ -459,4 +459,28 @@ class Client {
     return $response;
   }
 
+  /**
+   * Get a list of Assets given an array of Asset ID's.
+   *
+   * @param array $assetIds
+   *   The webdam Asset ID's.
+   *
+   * @return array
+   */
+  public function getAssetMultiple(array $assetIds) {
+    $this->checkAuth();
+
+    $response = $this->client->request(
+      "GET",
+      $this->baseUrl . '/assets/list?ids=' . implode(',',$assetIds),
+      ['headers' => $this->getDefaultHeaders()]
+    );
+    $response = json_decode((string) $response->getBody());
+    $assets = [];
+    foreach ($response as $asset){
+      $assets[] = Asset::fromJson($asset);
+    }
+    return $assets;
+  }
+
 }
