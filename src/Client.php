@@ -421,7 +421,12 @@ class Client {
    *   The webdam folder ID.
    *
    * @param array $params
-   *   Additional query parameters for the request
+   *   Additional query parameters for the request.
+   *     - sortby: The field to sort by. Options: filename, filesize, datecreated, datemodified. (Default=datecreated)
+   *     - sortdir: The direction to sort by. Options: asc, desc (Default=asc)
+   *     - limit: The number of items to return. Any int between 1 and 100. (Default=50)
+   *     - offset: The item number to start with. (Default=0)
+   *     - types: File type filter. Options: image, audiovideo, document, presentation, other. (Default=NULL)
    *
    * @return object
    *   Contains the following keys:
@@ -431,19 +436,18 @@ class Client {
    *     - limit: The number of assets returned at a time.
    *     - facets: Information about the assets returned.
    *     - items: an array of Asset objects.
-   *
-   * @todo Automatically page through the results and return an all-inclusive list.
-   * @todo Alternatively, provide page/sortdir/sortby/limit/types filters.
    */
   public function getFolderAssets($folderId, array $params =[]) {
     $this->checkAuth();
 
-    $query_string = http_build_query($params);
 
     $response = $this->client->request(
       "GET",
-      $this->baseUrl . '/folders/' . $folderId . '/assets?'. $query_string,
-      ['headers' => $this->getDefaultHeaders()]
+      $this->baseUrl . '/folders/' . $folderId . '/assets',
+      [
+        'headers' => $this->getDefaultHeaders(),
+        'query' => $params,
+      ]
     );
     $response = json_decode((string) $response->getBody());
 
@@ -492,19 +496,27 @@ class Client {
    * Get a list of Assets given an array of Asset ID's.
    *
    * @param array $params
-   *   The webdam search parameters.
+   *   Additional query parameters for the request.
+   *     - sortby: The field to sort by. Options: filename, filesize, datecreated, datemodified. (Default=datecreated)
+   *     - sortdir: The direction to sort by. Options: asc, desc (Default=asc)
+   *     - limit: The number of items to return. Any int between 1 and 100. (Default=50)
+   *     - offset: The item number to start with. (Default=0)
+   *     - types: File type filter. Options: image, audiovideo, document, presentation, other. (Default=NULL)
    *
    * @return array
+   *
+   * @todo clean this up. mystery arrays make an api hard to use.
    */
   public function searchAssets(array $params) {
     $this->checkAuth();
 
-    $query_string = http_build_query($params);
-
     $response = $this->client->request(
       "GET",
-      $this->baseUrl . '/search?' . $query_string,
-      ['headers' => $this->getDefaultHeaders()]
+      $this->baseUrl . '/search',
+      [
+        'headers' => $this->getDefaultHeaders(),
+        'query' => $params,
+      ]
     );
     $response = json_decode((string) $response->getBody());
 
