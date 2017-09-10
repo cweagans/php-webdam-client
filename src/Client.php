@@ -420,6 +420,9 @@ class Client {
    * @param int $folderId
    *   The webdam folder ID.
    *
+   * @param array $params
+   *   Additional query parameters for the request
+   *
    * @return object
    *   Contains the following keys:
    *     - folders: an array containing a MiniFolder describing $folderId
@@ -432,12 +435,14 @@ class Client {
    * @todo Automatically page through the results and return an all-inclusive list.
    * @todo Alternatively, provide page/sortdir/sortby/limit/types filters.
    */
-  public function getFolderAssets($folderId) {
+  public function getFolderAssets($folderId, array $params =[]) {
     $this->checkAuth();
+
+    $query_string = http_build_query($params);
 
     $response = $this->client->request(
       "GET",
-      $this->baseUrl . '/folders/' . $folderId . '/assets',
+      $this->baseUrl . '/folders/' . $folderId . '/assets?'. $query_string,
       ['headers' => $this->getDefaultHeaders()]
     );
     $response = json_decode((string) $response->getBody());
@@ -481,6 +486,35 @@ class Client {
       $assets[] = Asset::fromJson($asset);
     }
     return $assets;
+  }
+
+  /**
+   * Get a list of Assets given an array of Asset ID's.
+   *
+   * @param array $params
+   *   The webdam search parameters.
+   *
+   * @return array
+   */
+  public function searchAssets(array $params) {
+    $this->checkAuth();
+
+    $query_string = http_build_query($params);
+
+    $response = $this->client->request(
+      "GET",
+      $this->baseUrl . '/search?' . $query_string,
+      ['headers' => $this->getDefaultHeaders()]
+    );
+    $response = json_decode((string) $response->getBody());
+
+    $results = [
+      'total_count' => $response->total_count,
+    ];
+    foreach ($response->items as $asset){
+      $results['assets'][] = Asset::fromJson($asset);
+    }
+    return $results;
   }
 
 }
