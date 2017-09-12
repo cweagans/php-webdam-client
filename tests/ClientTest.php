@@ -8,7 +8,6 @@
 namespace cweagans\webdam\tests;
 
 use cweagans\webdam\Client;
-use Drupal\media_webdam\Webdam;
 use GuzzleHttp\Client as GClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
