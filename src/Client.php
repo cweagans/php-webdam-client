@@ -460,8 +460,10 @@ class Client {
 
     // Replace folders key with actual Folder objects.
     $folders = [];
-    foreach ($response->folders as $folder) {
-      $folders[] = MiniFolder::fromJson($folder);
+    if(isset($response->folders) && is_array($response->folders)) {
+      foreach ($response->folders as $folder) {
+        $folders[] = MiniFolder::fromJson($folder);
+      }
     }
     $response->folders = $folders;
 
