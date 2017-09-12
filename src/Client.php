@@ -142,6 +142,17 @@ class Client {
   }
 
   /**
+   * Set the internal auth token.
+   *
+   * @param string $token
+   * @param int $token_expiry
+   */
+  public function setToken($token, $token_expiry) {
+    $this->accessToken = $token;
+    $this->accessTokenExpiry = $token_expiry;
+  }
+
+  /**
    * Return an array of headers to add to every authenticated request.
    *
    * Note that this should not be used for the initial authentication request, as
