@@ -286,10 +286,13 @@ class Client {
    *
    * @param int $assetId
    *   The webdam Asset ID.
+   * @param bool $include_xmp
+   *   If TRUE, $this->getAssetMetadata() will be called and the result will
+   *   be added to the returned asset object.
    *
    * @return Asset
    */
-  public function getAsset($assetId) {
+  public function getAsset($assetId, $include_xmp = FALSE) {
     $this->checkAuth();
 
     $response = $this->client->request(
@@ -298,7 +301,13 @@ class Client {
       ['headers' => $this->getDefaultHeaders()]
     );
 
-    return Asset::fromJson((string) $response->getBody());
+    $asset = Asset::fromJson((string) $response->getBody());
+
+    if ($include_xmp) {
+      $asset->xmp_metadata = $this->getAssetMetadata($assetId);
+    }
+
+    return $asset;
   }
 
   /**
@@ -574,6 +583,33 @@ class Client {
       ]
     );
     return $response->getBody();
+  }
+
+  /**
+   * Get asset metadata.
+   */
+  public function getAssetMetadata($assetId) {
+    $this->checkAuth();
+
+    $response = $this->client->request(
+      'GET',
+      $this->baseUrl . '/assets/' . $assetId . '/metadatas/xmp',
+      ['headers' => $this->getDefaultHeaders()]
+    );
+
+    $response = json_decode((string) $response->getBody());
+
+    $metadata = [];
+    foreach ($response->active_fields as $field) {
+      if (!empty($field->value)) {
+        $metadata[$field->field] = [
+          'label' => $field->field_name,
+          'value' => $field->value,
+        ];
+      }
+    }
+
+    return $metadata;
   }
 
 }

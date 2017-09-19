@@ -132,6 +132,11 @@ class Asset implements EntityInterface, \JsonSerializable {
   public $folder;
 
   /**
+   * @var array $additional_properties
+   */
+  public $xmp_metadata;
+
+  /**
    * {@inheritdoc}
    */
   public static function fromJson($json) {
