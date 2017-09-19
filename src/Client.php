@@ -531,4 +531,17 @@ class Client {
     return $results;
   }
 
+  public function downloadAsset(int $assetID) {
+    $this->checkAuth();
+
+    $response = $this->client->request(
+      "GET",
+      $this->baseUrl . '/assets/' . $assetID . '/download',
+      [
+        'headers' => $this->getDefaultHeaders(),
+      ]
+    );
+    return $response->getBody();
+  }
+
 }
