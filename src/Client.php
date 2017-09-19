@@ -554,4 +554,26 @@ class Client {
     return $results;
   }
 
+  /**
+   * Download file asset from webdam
+   *
+   * @param int $assetID
+   *   Asset ID to be fetched
+   *
+   * @return string
+   *   Contents of the file as a string
+   */
+  public function downloadAsset($assetID) {
+    $this->checkAuth();
+
+    $response = $this->client->request(
+      "GET",
+      $this->baseUrl . '/assets/' . $assetID . '/download',
+      [
+        'headers' => $this->getDefaultHeaders(),
+      ]
+    );
+    return $response->getBody();
+  }
+
 }
