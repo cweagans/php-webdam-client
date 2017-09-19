@@ -33,6 +33,13 @@ class Client {
   protected $client;
 
   /**
+   * A flag for determining if a token has been manually set.
+   *
+   * @var bool
+   */
+  protected $manualToken = FALSE;
+
+  /**
    * The username for the Webdam API account.
    *
    * @var string
@@ -101,6 +108,10 @@ class Client {
       return;
     }
 
+    if ($this->manualToken) {
+      throw new InvalidCredentialsException('Cannot reauthenticate a manually set token.');
+    }
+
     // Otherwise, we need to authenticate and store the access token and expiry.
     $url = $this->baseUrl . '/oauth2/token';
     $data = [
@@ -139,6 +150,18 @@ class Client {
         throw new InvalidCredentialsException($body->error_description . ' (' . $body->error . ').');
       }
     }
+  }
+
+  /**
+   * Set the internal auth token.
+   *
+   * @param string $token
+   * @param int $token_expiry
+   */
+  public function setToken($token, $token_expiry) {
+    $this->manualToken = TRUE;
+    $this->accessToken = $token;
+    $this->accessTokenExpiry = $token_expiry;
   }
 
   /**
