@@ -137,6 +137,11 @@ class Asset implements EntityInterface, \JsonSerializable {
   public $xmp_metadata;
 
   /**
+   * @var stdClass $expiration
+   */
+  public $expiration;
+
+  /**
    * {@inheritdoc}
    */
   public static function fromJson($json) {
@@ -194,11 +199,15 @@ class Asset implements EntityInterface, \JsonSerializable {
       $asset->folder = MiniFolder::fromJson($json->folder);
     }
 
+    if (isset($json->expiration)) {
+      $asset->expiration = $json->expiration;
+    }
+
     return $asset;
   }
 
   public function jsonSerialize() {
-    return [
+    $properties = [
       'id' => $this->id,
       'type' => 'asset',
       'type_id' => $this->type_id,
@@ -234,6 +243,12 @@ class Asset implements EntityInterface, \JsonSerializable {
       'onhold' => $this->onhold,
       'metadata' => $this->metadata,
     ];
+
+    if (isset($this->expiration)) {
+      $properties['expiration'] = $this->expiration;
+    }
+
+    return $properties;
   }
 
 }
