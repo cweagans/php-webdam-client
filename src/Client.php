@@ -100,6 +100,29 @@ class Client {
   }
 
   /**
+   * Checks if the auth details are correct.
+   *
+   * @param array $client_data
+   *   The client authentication details.
+   */
+  public function checkCredentials($client_data) {
+    $url = $this->baseUrl . '/oauth2/token';
+    try {
+      $this->client->request("POST", $url, ['form_params' => $client_data]);
+    }
+    catch (ClientException $e) {
+      // Any form of bad auth with Webdam is a 400, but we're wrapping
+      // it here just in case.
+      if ($e->getResponse()->getStatusCode() == 400) {
+        $body = (string) $e->getResponse()->getBody();
+        $body = json_decode($body);
+
+        throw new InvalidCredentialsException($body->error_description . ' (' . $body->error . ').');
+      }
+    }
+  }
+
+  /**
    * Authenticates with the Webdam service and retrieves an access token, or uses existing one.
    */
   public function checkAuth() {
