@@ -428,22 +428,25 @@ class Client {
    *
    * @return array
    *   Response Status 100 / 200
+   *
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   * @throws \cweagans\webdam\Exception\InvalidCredentialsException
    */
   protected function uploadPresigned($presignedUrl, $file_uri, $file_type) {
     $this->checkAuth();
 
     $file = fopen($file_uri, 'r');
     $response = $this->client->request(
-      "PUT",
+      'PUT',
       $presignedUrl, [
         'headers' => ['Content-Type' => $file_type],
         'body' => stream_get_contents($file),
+        RequestOptions::TIMEOUT => 0,
       ]);
 
     return [
       'status' => json_decode($response->getStatusCode(), TRUE),
     ];
-
   }
 
   /**
