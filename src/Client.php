@@ -268,7 +268,12 @@ class Client {
     $response = $this->client->request(
       "GET",
       $this->baseUrl . '/folders/0',
-      ['headers' => $this->getDefaultHeaders()]
+      [
+        'headers' => $this->getDefaultHeaders(),
+        'query' => [
+          'getchildren' => 'false',
+        ],
+      ]
     );
 
     $folder_data = json_decode($response->getBody());
