@@ -15,6 +15,7 @@ use cweagans\webdam\Exception\InvalidCredentialsException;
 use cweagans\webdam\Exception\UploadAssetException;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\RequestOptions;
 
 class Client {
 
