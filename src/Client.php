@@ -503,6 +503,45 @@ class Client {
   }
 
   /**
+   * Creates folder directory in Webdam.
+   *
+   * @param string $folder_name
+   *   The folder name you want to create.
+   * @param string $parent_id
+   *   ID from parent folder.
+   *
+   * @return string
+   *    The folder ID.
+   */
+  public function createFolder($folder_name = '', $parent_id = '') {
+    if (!empty($folder_name) && !empty($parent_id)) {
+      try {
+        $this->checkAuth();
+        $data = [
+          'parent' => $parent_id,
+          'clientfolderid' => null,
+          'name' => $folder_name,
+          'status' => 'active',
+        ];
+        $response = $this->client->request(
+          'POST',
+          $this->baseUrl . '/folders',
+          [
+            RequestOptions::JSON => $data,
+            'headers' => $this->getDefaultHeaders(),
+          ]
+        );
+        return (string) json_decode($response->getBody(), TRUE)['id'];
+      } catch (ClientException $e) {
+        $body = (string) $e->getResponse()->getBody();
+        $body = json_decode($body);
+        $error = $body->error_description . ' (' . $body->error . ').';
+        return $error;
+      }
+    }
+  }
+
+  /**
    * Get a list of Assets given an array of Asset ID's.
    *
    * @param array $assetIds
