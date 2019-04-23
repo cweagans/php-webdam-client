@@ -139,7 +139,7 @@ class ClientTest extends TestCase {
     $client = new Client($guzzleClient, '', '', '', '');
 
     $folder = $client->createFolder('GIS Data', '12345');
-    $this->assertTrue(is_object($folder));
+    $this->assertTrue(is_numeric($folder['id']));
     $this->assertInstanceOf('cweagans\webdam\Entity\Folder', $folder);
   }
 
