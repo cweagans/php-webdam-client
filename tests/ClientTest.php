@@ -126,6 +126,24 @@ class ClientTest extends TestCase {
   }
 
   /**
+   * Test createFolder().
+   */
+  public function testCreateFolder() {
+    $mock = new MockHandler([
+      new Response(200, [], '{"access_token":"ACCESS_TOKEN", "expires_in":3600, "token_type":"bearer", "refresh_token":"REFRESH_TOKEN"}'),
+      new Response(200, [], file_get_contents(__DIR__ . '/json/folder.json')),
+    ]);
+    $handler = HandlerStack::create($mock);
+    $guzzleClient = new GClient(['handler' => $handler]);
+
+    $client = new Client($guzzleClient, '', '', '', '');
+
+    $folder = $client->createFolder('GIS Data', '12345');
+    $this->assertTrue(is_object($folder));
+    $this->assertInstanceOf('cweagans\webdam\Entity\Folder', $folder);
+  }
+
+  /**
    * Test getTopLevelFolders().
    */
   public function testGetTopLevelFolders() {
