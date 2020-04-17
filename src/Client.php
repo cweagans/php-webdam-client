@@ -513,6 +513,10 @@ class Client {
   public function getAssetMultiple(array $assetIds) {
     $this->checkAuth();
 
+    if (empty($assetIds)) {
+      return [];
+    }
+
     $response = $this->client->request(
       "GET",
       $this->baseUrl . '/assets/list?ids=' . implode(',',$assetIds),
