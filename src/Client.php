@@ -591,6 +591,14 @@ class Client {
 
   /**
    * Get asset metadata.
+   *
+   * @param int|string $assetId
+   *   Multiple IDs can be passed in separated by a comma, or a single ID can
+   *   be used.
+   *
+   * @return array
+   *   The metadata for the asset. If multiple assets are passed in, this will
+   *   be an array of arrays of metadata keyed by asset ID.
    */
   public function getAssetMetadata($assetId) {
     $this->checkAuth();
@@ -603,6 +611,30 @@ class Client {
 
     $response = json_decode((string) $response->getBody());
 
+    // Check if this contains multiple metadatas.
+    $metadata = [];
+    if (!isset($response->active_fields)) {
+      foreach ($response as $asset_id => $asset_metadata) {
+        $metadata[$asset_id] = $this->parseMetadata($asset_metadata);
+      }
+    }
+    else {
+      $metadata = $this->parseMetadata($response);
+    }
+
+    return $metadata;
+  }
+
+  /**
+   * Helper to parse metadata response for a single asset.
+   *
+   * @param \stdClass $metadata
+   *   The metadata response object.
+   *
+   * @return array
+   *   The parsed metadata.
+   */
+  protected function parseMetadata($response) {
     $metadata = [];
     foreach ($response->active_fields as $field) {
       if (!empty($field->value)) {
@@ -612,7 +644,6 @@ class Client {
         ];
       }
     }
-
     return $metadata;
   }
 
